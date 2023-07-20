@@ -3,7 +3,7 @@ volumes:
   mongo:
   redis:
   traefik:
-services: 
+services:
   wildduck:
     image: nodemailer/wildduck:v1.34.0
     restart: unless-stopped
@@ -31,7 +31,7 @@ services:
 
   wildduck-webmail:
     image: nodemailer/wildduck-webmail:latest
-    command: 
+    command:
       - ""
     restart: unless-stopped
     depends_on:
@@ -52,7 +52,7 @@ services:
     restart: unless-stopped
     ports:
       - "587:587"
-    depends_on: 
+    depends_on:
       - mongo
       - redis
     volumes:
@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
     volumes:
       - mongo:/data/db
-    
+
   redis:
     image: redis:alpine
     restart: unless-stopped
