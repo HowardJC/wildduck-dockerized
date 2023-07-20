@@ -1,0 +1,77 @@
+version: 1
+services:
+  - id: mongo
+    name: mongo
+    env: docker
+    dockerfile: mongo
+    disk: 10
+
+  - id: redis
+    name: redis
+    env: docker
+    dockerfile: redis:alpine
+    disk: 10
+
+  - id: traefik
+    name: traefik
+    env: docker
+    dockerfile: traefik
+    disk: 10
+
+  - id: wildduck
+    name: wildduck
+    env: docker
+    dockerfile: nodemailer/wildduck:v1.34.0
+    disk: 10
+    dependencies:
+      - mongo
+      - redis
+    envVars:
+      - key: HOSTNAMES
+        scope: INSTANCE
+        value: mail.inco.quest
+
+  - id: wildduck-webmail
+    name: wildduck-webmail
+    env: docker
+    dockerfile: nodemailer/wildduck-webmail:latest
+    disk: 10
+    dependencies:
+      - mongo
+      - redis
+      - wildduck
+    envVars:
+      - key: HOSTNAMES
+        scope: INSTANCE
+        value: mail.inco.quest
+
+  - id: zonemta
+    name: zonemta
+    env: docker
+    dockerfile: nodemailer/zonemta-wildduck
+    disk: 10
+    dependencies:
+      - mongo
+      - redis
+    envVars:
+      - key: HOSTNAMES
+        scope: INSTANCE
+        value: mail.inco.quest
+
+  - id: haraka
+    name: haraka
+    env: docker
+    dockerfile: nodemailer/haraka-wildduck
+    disk: 10
+    dependencies:
+      - mongo
+      - redis
+      - rspamd
+
+  - id: rspamd
+    name: rspamd
+    env: docker
+    dockerfile: nodemailer/rspamd
+    disk: 10
+    dependencies:
+      - redis
